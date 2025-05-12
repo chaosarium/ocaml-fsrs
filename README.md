@@ -21,3 +21,6 @@ opam install ptime
 dune build && dune exec fsrs_ocaml -- -n Alice -c 3
 ```
 
+## Acknowledgements
+
+This implementation is largely based on the Rust implementation [rs-fsrs](https://github.com/open-spaced-repetition/rs-fsrs) (MIT license).
