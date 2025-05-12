@@ -1,1 +1,3 @@
-fsrs_ocaml/_build
+ocaml-fsrs/_build
+reference
+.zed

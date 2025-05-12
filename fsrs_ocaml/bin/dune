@@ -1,5 +1,0 @@
-(executable
- (name main)
- (public_name fsrs_ocaml)
- (libraries cmdliner)
-)

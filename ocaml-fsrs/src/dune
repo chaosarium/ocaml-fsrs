@@ -1,0 +1,9 @@
+  (library
+   (name fsrs)
+   (modules fsrs models parameters scheduler utils)
+   (libraries base ptime ptime.clock timedesc)
+   (flags (:standard -w -26-32-27-69-34-37))
+   (public_name ocaml-fsrs)
+   (preprocess (pps ppx_deriving.show ppx_deriving.make))
+   )
+  
