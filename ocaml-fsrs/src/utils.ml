@@ -21,3 +21,6 @@ let span_to_minutes span =
 let span_to_seconds span =
   let total_seconds = int_of_float (Timedesc.Span.to_float_s span) in
   total_seconds
+
+
+let clamp_float (lo : float) (hi : float) (x : float) : float = min hi (max lo x)

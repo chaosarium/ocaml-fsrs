@@ -14,11 +14,11 @@ type t = {
 val _DECAY : float
 val _FACTOR : float
 
-val default : t
+val default : unit -> t
 
 val forgetting_curve : t -> elapsed_days:float -> stability:float -> float
-val init_difficulty : t -> rating:Models.rating -> float
 val init_stability : t -> rating:Models.rating -> float
+val init_difficulty : t -> rating:Models.rating -> float
 val next_interval : t -> stability:float -> elapsed_days:int -> float
 val next_difficulty : t -> difficulty:float -> rating:Models.rating -> float
 val short_term_stability : t -> stability:float -> rating:Models.rating -> float
@@ -45,7 +45,7 @@ type fuzz_range = {
   end_ : float;
   factor : float;
 }
-val fuzz_range_new : start:float -> end_:float -> factor:float -> fuzz_range
+val create_fuzz_range : start:float -> end_:float -> factor:float -> fuzz_range
 val get_fuzz_range : interval:float -> elapsed_days:int -> maximum_interval:int -> int * int
 val some_fuzz_ranges: fuzz_range list
 
