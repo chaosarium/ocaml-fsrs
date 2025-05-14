@@ -22,3 +22,5 @@ module type Scheduler = sig
   val preview : t -> card -> record_log
   val review : t -> card -> rating -> (card * scheduling_info)
 end
+
+val mk_next_map : t -> card * card * card * card -> record_log

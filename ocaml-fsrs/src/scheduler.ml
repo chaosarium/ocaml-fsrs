@@ -49,3 +49,14 @@ module type Scheduler = sig
   val preview : t -> card -> record_log
   val review : t -> card -> rating -> (card * scheduling_info)
 end
+
+let mk_next_map sched (next_again, next_hard, next_good, next_easy) =
+  let again_scheduling_info = { card = next_again; review_log = build_log sched Again } in
+  let hard_scheduling_info = { card = next_hard; review_log = build_log sched Hard } in
+  let good_scheduling_info = { card = next_good; review_log = build_log sched Good } in
+  let easy_scheduling_info = { card = next_easy; review_log = build_log sched Easy } in
+  let next' = RatingMap.add Again again_scheduling_info sched.next in
+  let next'' = RatingMap.add Hard hard_scheduling_info next' in
+  let next''' = RatingMap.add Good good_scheduling_info next'' in
+  let next'''' = RatingMap.add Easy easy_scheduling_info next''' in  
+  next''''
