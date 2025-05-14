@@ -15,11 +15,13 @@ opam install base
 opam install ptime
 ```
 
-## Testing
+## Running stuff
 
 ```sh
-# test command line parsing
-dune build && dune exec ocaml-fsrs -- -n Alice -c 3
+# build
+dune build
+# test command line parsing (may want to parse commands? idk)
+dune exec ocaml-fsrs -- -n Alice -c 3
 # run unit tests
 dune runtest
 ```
