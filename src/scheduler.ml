@@ -9,6 +9,7 @@ type t = {
   next : record_log;
 }
 
+(* return new cheduler with newly initialised seed *)
 let init_seed sched =
   let time = Int64.to_int (Int64.div (Timedesc.Timestamp.to_float_s sched.now |> (fun s -> Int64.of_float (s *. 1000.))) 1L) in
   let reps = sched.current.reps in
@@ -36,6 +37,7 @@ let create (parameters : Parameters.t) (card : card) (now : Timedesc.Timestamp.t
     next = RatingMap.empty;
   }
 
+(* log entry of this review *)
 let build_log sched rating =
   {
     rating;

@@ -176,3 +176,5 @@ let get_fuzz_range ~(interval: float) ~(elapsed_days: int) ~(maximum_interval: i
   in
   let max_interval = Float.min (Float.round (i +. delta)) (float_of_int maximum_interval) in
   (int_of_float min_interval, int_of_float max_interval)
+
+(* TODO implement random number generator and seed if that's what we want. *)
