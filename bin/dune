@@ -1,0 +1,6 @@
+(executable
+ (name main)
+ (flags (:standard -w -26-27))
+ (public_name ocaml-fsrs)
+ (libraries cmdliner)
+)
