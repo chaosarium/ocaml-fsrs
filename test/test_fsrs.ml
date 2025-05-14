@@ -24,18 +24,18 @@ let test_basic_scheduler_interval () =
   let params = Parameters.default () in
   let fsrs = Fsrs.create params in
   let card = Models.new_card () in
-  (* let now = parse_utc "2022-11-29 12:30:00 +0000 UTC" in *)
   let now = string_to_utc "2022-11-29T12:30:00Z" in
-  let rec loop card now ratings acc i =
-    if i >= Array.length ratings then List.rev acc
-    else
-      let info = Fsrs.next fsrs card now ratings.(i) in
-      let card' = info.card in
-      let acc' = card'.scheduled_days :: acc in
-      let now' = card'.due in
-      loop card' now' ratings acc' (i+1)
+  let intervals, _, _ =
+    Array.fold_left
+      (fun (acc, card, now) rating ->
+        let info = Fsrs.next fsrs card now rating in
+        let card' = info.card in
+        let now' = card'.due in
+        (card'.scheduled_days::acc, card', now'))
+      ([], card, now)
+      _TEST_RATINGS
   in
-  let intervals = loop card now _TEST_RATINGS [] 0 |> Array.of_list in
+  let intervals = Array.of_list (List.rev intervals) in
   let expected_intervals = [| 0; 4; 15; 48; 136; 351; 0; 0; 7; 13; 24; 43; 77 |] in
   check (array int) "scheduled_days history" expected_intervals intervals
 
