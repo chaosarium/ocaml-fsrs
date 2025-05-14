@@ -1,3 +1,5 @@
+type ts = Timedesc.Timestamp.t
+
 type state = 
   | New 
   | Learning 
@@ -22,7 +24,7 @@ let rating_to_int (r: rating) =
 let possible_ratings = [Again; Hard; Good; Easy]
 
 type card = {
-  due: Timedesc.Timestamp.t;
+  due: ts;
   stability: float;
   difficulty: float;
   elapsed_days: int;
@@ -30,7 +32,7 @@ type card = {
   reps: int;
   lapses: int;
   state: state;
-  last_review: Timedesc.Timestamp.t;
+  last_review: ts;
 }
 let show_card (c : card) =
   Printf.sprintf
@@ -50,7 +52,7 @@ type review_log = {
   elapsed_days: int;
   scheduled_days: int;
   state: state;
-  reviewed_date: Timedesc.Timestamp.t;
+  reviewed_date: ts;
 }
 let show_review_log (r : review_log) =
   Printf.sprintf
@@ -87,14 +89,11 @@ let new_card () =
     last_review = now;
   }
 
-let get_retrievability (card : card) ~(now : Timedesc.Timestamp.t) (forgetting_curve : float -> float -> float) =
+let get_retrievability (card : card) ~(now : ts) (forgetting_curve : elapsed_days:float -> stability:float -> float) =
   match card.state with
   | New -> 0.0
   | _ ->
-    let elapsed_days =
-      0
-      (* TODO *)
-      (* let span = Ptime.diff now card.last_review in
-      int_of_float (Ptime.Span.to_float_s span /. 86400.) *)
+    let 
+      elapsed_days = Utils.span_to_days (Timedesc.Timestamp.sub now card.last_review)
     in
-    forgetting_curve (float_of_int elapsed_days) card.stability
+    forgetting_curve ~elapsed_days:(float_of_int elapsed_days) ~stability:card.stability

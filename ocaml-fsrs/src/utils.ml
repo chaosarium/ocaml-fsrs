@@ -24,3 +24,9 @@ let span_to_seconds span =
 
 
 let clamp_float (lo : float) (hi : float) (x : float) : float = min hi (max lo x)
+
+
+let mk_minutes (n : int) =
+  Timedesc.Span.make ~s:Int64.(of_int (n * 60)) ()
+let mk_days (n : int) =
+  Timedesc.Span.make ~s:Int64.(of_int (n * 24 * 60 * 60)) ()

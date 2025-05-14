@@ -5,16 +5,16 @@ type t = {
   parameters : Parameters.t;
   last : card;
   current : card;
-  now : Timedesc.Timestamp.t;
+  now : ts;
   next : record_log;
 }
 
-let init_seed scheduler =
-  let time = Int64.to_int (Int64.div (Timedesc.Timestamp.to_float_s scheduler.now |> (fun s -> Int64.of_float (s *. 1000.))) 1L) in
-  let reps = scheduler.current.reps in
-  let mul = scheduler.current.difficulty *. scheduler.current.stability in
+let init_seed sched =
+  let time = Int64.to_int (Int64.div (Timedesc.Timestamp.to_float_s sched.now |> (fun s -> Int64.of_float (s *. 1000.))) 1L) in
+  let reps = sched.current.reps in
+  let mul = sched.current.difficulty *. sched.current.stability in
   let seed_str = Printf.sprintf "%d_%d_%f" time reps mul in
-  { scheduler with parameters = { scheduler.parameters with seed = seed_str } }
+  { sched with parameters = { sched.parameters with seed = seed_str } }
 
 (* TODO maybe init_seed should mutate the scheduler *)
 let create (parameters : Parameters.t) (card : card) (now : Timedesc.Timestamp.t) =
@@ -36,13 +36,13 @@ let create (parameters : Parameters.t) (card : card) (now : Timedesc.Timestamp.t
     next = RatingMap.empty;
   }
 
-let build_log scheduler rating =
+let build_log sched rating =
   {
     rating;
-    state = scheduler.current.state;
-    elapsed_days = scheduler.current.elapsed_days;
-    scheduled_days = scheduler.current.scheduled_days;
-    reviewed_date = scheduler.now;
+    state = sched.current.state;
+    elapsed_days = sched.current.elapsed_days;
+    scheduled_days = sched.current.scheduled_days;
+    reviewed_date = sched.now;
   }
 
 module type Scheduler = sig
