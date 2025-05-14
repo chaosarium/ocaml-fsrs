@@ -9,6 +9,7 @@ type rating =
   | Hard 
   | Good 
   | Easy
+val possible_ratings : rating list
 type card = {
   due: ts;
   stability: float;

@@ -31,7 +31,7 @@ let new_state (sched : t) (rating : rating) : (t * scheduling_info) =
           stability = next_stability;
         }
       | Easy -> 
-        let easy_interval = Parameters.next_interval sched.parameters ~stability:sched.current.stability ~elapsed_days:sched.current.elapsed_days in
+        let easy_interval = Parameters.next_interval sched.parameters ~stability:next_stability ~elapsed_days:sched.current.elapsed_days in
         {sched.current with 
           scheduled_days = int_of_float easy_interval;
           due = Timedesc.Timestamp.add sched.now (Utils.mk_days (int_of_float easy_interval));
@@ -66,7 +66,7 @@ let learning_state (sched : t) (rating : rating) : (t * scheduling_info) =
           stability = next_stability;
         }
       | Good -> 
-        let good_interval = Parameters.next_interval sched.parameters ~stability:sched.current.stability ~elapsed_days:sched.current.elapsed_days in
+        let good_interval = Parameters.next_interval sched.parameters ~stability:next_stability ~elapsed_days:sched.current.elapsed_days in
         {sched.current with 
           scheduled_days = int_of_float good_interval;
           due = Timedesc.Timestamp.add sched.now (Utils.mk_days (int_of_float good_interval));
@@ -148,15 +148,18 @@ let review_state (sched : t) (rating : rating) : (t * scheduling_info) =
     let next' = Scheduler.mk_next_map sched (next_again, next_hard, next_good, next_easy) in
     ({sched with next = next'}, RatingMap.find rating next')
 
-let preview (sched : t) (card : card) : record_log =
-  let now = sched.now in
-  RatingMap.empty
+let review (sched : t) (rating : rating) : (t * scheduling_info) =
+  let _ = print_endline "⌛ basic review" in 
+  match sched.last.state with
+  | New -> (new_state sched rating)
+  | Learning | Relearning -> learning_state sched rating
+  | Review -> review_state sched rating
 
-let review (sched : t) (card : card) (rating : rating) : (card * scheduling_info) =
+let preview (sched : t) : record_log =
+  let _ = print_endline "basic preview" in 
   let now = sched.now in
-  let elapsed_days = card.elapsed_days + 1 in
-  let scheduled_days = card.scheduled_days + 1 in
-  let new_card = { card with elapsed_days; scheduled_days } in
-  let review_log = build_log sched rating in
-  let info = { card = new_card; review_log } in
-  (new_card, info)
+  RatingMap.of_list
+    (List.map (fun rating ->
+      (rating, snd (review sched rating))
+    ) Models.possible_ratings)
+

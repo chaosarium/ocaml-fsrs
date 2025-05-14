@@ -118,15 +118,17 @@ let review_state (sched : t) (rating : rating) : (t * scheduling_info) =
 let learning_state (sched : t) (rating : rating) : (t * scheduling_info) = review_state sched rating
 
 
-let preview (sched : t) (card : card) : record_log =
-  let now = sched.now in
-  RatingMap.empty
+let review (sched : t) (rating : rating) : (t * scheduling_info) =
+  match sched.last.state with
+  | New -> (new_state sched rating)
+  | Learning | Relearning -> learning_state sched rating
+  | Review -> review_state sched rating
 
-let review (sched : t) (card : card) (rating : rating) : (card * scheduling_info) =
+let preview (sched : t) : record_log =
+  let _ = print_endline "basic preview" in 
   let now = sched.now in
-  let elapsed_days = card.elapsed_days + 1 in
-  let scheduled_days = card.scheduled_days + 1 in
-  let new_card = { card with elapsed_days; scheduled_days } in
-  let review_log = build_log sched rating in
-  let info = { card = new_card; review_log } in
-  (new_card, info)
+  RatingMap.of_list
+    (List.map (fun rating ->
+      (rating, snd (review sched rating))
+    ) Models.possible_ratings)
+

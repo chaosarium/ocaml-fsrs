@@ -46,8 +46,8 @@ let build_log sched rating =
   }
 
 module type Scheduler = sig
-  val preview : t -> card -> record_log
-  val review : t -> card -> rating -> (card * scheduling_info)
+  val preview : t -> record_log
+  val review : t -> rating -> (t * scheduling_info)
 end
 
 let mk_next_map sched (next_again, next_hard, next_good, next_easy) =

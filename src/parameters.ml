@@ -82,7 +82,7 @@ let next_difficulty (params: t) ~(difficulty: float) ~(rating: Models.rating) : 
   let rating_int: int = Models.rating_to_int rating in
   let next_difficulty = difficulty -. params.w.(6) *. (float_of_int (rating_int - 3)) in
   let mean_reversion = mean_reversion params ~initial:(init_difficulty params ~rating:Models.Easy) ~current:next_difficulty in
-  Utils.clamp_float mean_reversion 1.0 10.0
+  Utils.clamp_float 1.0 10.0 mean_reversion
 
 (* val short_term_stability : t -> stability:float -> rating:Models.rating -> float *)
 (* computes stability after review in same day *)

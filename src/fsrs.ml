@@ -20,9 +20,9 @@ let scheduler (fsrs : t) (card : card) (now : Timedesc.Timestamp.t) : (module Sc
 
 let repeat (fsrs : t) (card : card) (now : Timedesc.Timestamp.t) : record_log =
   let (module S : Scheduler.Scheduler), sched = scheduler fsrs card now in
-  S.preview sched card
+  S.preview sched
 
 let next (fsrs : t) (card : card) (now : Timedesc.Timestamp.t) (rating : rating) : scheduling_info =
   let (module S : Scheduler.Scheduler), sched = scheduler fsrs card now in
-  let _, info = S.review sched card rating in
+  let _, info = S.review sched rating in
   info

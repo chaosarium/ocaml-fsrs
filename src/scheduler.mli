@@ -19,8 +19,8 @@ val build_log : t -> rating -> review_log
 val init_seed : t -> t
 
 module type Scheduler = sig
-  val preview : t -> card -> record_log
-  val review : t -> card -> rating -> (card * scheduling_info)
+  val preview : t -> record_log
+  val review : t -> rating -> (t * scheduling_info)
 end
 
 val mk_next_map : t -> card * card * card * card -> record_log
