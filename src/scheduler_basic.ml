@@ -149,14 +149,12 @@ let review_state (sched : t) (rating : rating) : (t * scheduling_info) =
     ({sched with next = next'}, RatingMap.find rating next')
 
 let review (sched : t) (rating : rating) : (t * scheduling_info) =
-  let _ = print_endline "⌛ basic review" in 
   match sched.last.state with
   | New -> (new_state sched rating)
   | Learning | Relearning -> learning_state sched rating
   | Review -> review_state sched rating
 
 let preview (sched : t) : record_log =
-  let _ = print_endline "basic preview" in 
   let now = sched.now in
   RatingMap.of_list
     (List.map (fun rating ->

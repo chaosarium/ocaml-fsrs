@@ -1,7 +1,7 @@
 open Models
 open Scheduler
 open Scheduler_basic
-(* open Scheduler_longterm *)
+open Scheduler_longterm
 
 type t = {
   parameters : Parameters.t;
@@ -14,9 +14,8 @@ let scheduler (fsrs : t) (card : card) (now : Timedesc.Timestamp.t) : (module Sc
     let sched = Scheduler.create fsrs.parameters card now in
     ((module Scheduler_basic : Scheduler.Scheduler), sched)
   else
-    (* let sched = Scheduler_longterm.create fsrs.parameters card now in
-    ((module Scheduler_longterm : Scheduler.Scheduler), sched) *)
-    failwith "not yet implemented"
+    let sched = Scheduler.create fsrs.parameters card now in
+    ((module Scheduler_longterm : Scheduler.Scheduler), sched)
 
 let repeat (fsrs : t) (card : card) (now : Timedesc.Timestamp.t) : record_log =
   let (module S : Scheduler.Scheduler), sched = scheduler fsrs card now in
