@@ -54,11 +54,57 @@ let init_difficulty (params: t) ~(rating: Models.rating) : float =
   let unclamped_difficulty = params.w.(4) -. exp (params.w.(5) *. float_of_int (rating_int - 1)) +. 1.0 in
   min (max unclamped_difficulty 1.0) 10.0
 
-(* TODO actually apply the fuzz if configured *)
+type fuzz_range = {
+  start : float;
+  end_ : float;
+  factor : float;
+}
+
+let some_fuzz_ranges: fuzz_range list = [
+  { start = 2.5; end_ = 7.0; factor = 0.15 };
+  { start = 7.0; end_ = 20.0; factor = 0.1 };
+  { start = 20.0; end_ = max_float; factor = 0.05 };
+]
+
+(* val create_fuzz_range : start:float -> end_:float -> factor:float -> fuzz_range *)
+let create_fuzz_range ~start ~end_ ~factor : fuzz_range =
+  { start; end_; factor }
+
+(* val get_fuzz_range : interval:float -> elapsed_days:int -> maximum_interval:int -> int * int *)
+let get_fuzz_range ~(interval: float) ~(elapsed_days: int) ~(maximum_interval: int) : int * int =
+  let delta = List.fold_left
+    (fun acc fuzz_range ->
+      acc +. fuzz_range.factor
+      *. Float.max
+        (Float.min interval fuzz_range.end_ -. fuzz_range.start)
+        0.0
+    )
+    1.0
+    some_fuzz_ranges
+  in
+  let i = Float.min interval (float_of_int maximum_interval) in
+  let min_interval =
+    let base = Float.max 2.0 (Float.round (i -. delta)) in
+    let base =
+      if i > float_of_int elapsed_days then
+        Float.max base (float_of_int elapsed_days +. 1.0)
+      else
+        base
+    in
+    Float.min base (Float.min (Float.round (i +. delta)) (float_of_int maximum_interval))
+  in
+  let max_interval = Float.min (Float.round (i +. delta)) (float_of_int maximum_interval) in
+  (int_of_float min_interval, int_of_float max_interval)
+
 (* val apply_fuzz : t -> interval:float -> elapsed_days:int -> float *)
 let apply_fuzz (params: t) ~(interval: float) ~(elapsed_days: int) : float =
-  (* let fuzz = Random.float 1.0 in *)
-  interval
+  if not params.enable_fuzz || interval < 2.5 then
+    interval
+  else
+    let prng = Alea.prng_new (Alea.String params.seed) in
+    let fuzz_factor = Alea.prng_double prng in
+    let min_interval, max_interval = get_fuzz_range ~interval ~elapsed_days ~maximum_interval:params.maximum_interval in
+    fuzz_factor *. (float_of_int (max_interval - min_interval) +. 1.0) +. float_of_int min_interval
 
 (* val next_interval : t -> stability:float -> elapsed_days:int -> float *)
 let next_interval (params: t) ~(stability: float) ~(elapsed_days: int) : float =
@@ -135,46 +181,4 @@ let next_forget_stability
   *. (((stability +. 1.0) ** params.w.(13)) -. 1.0)
   *. Float.exp ((1.0 -. retrievability) *. params.w.(14))
 
-type fuzz_range = {
-  start : float;
-  end_ : float;
-  factor : float;
-}
 
-let some_fuzz_ranges: fuzz_range list = [
-  { start = 2.5; end_ = 7.0; factor = 0.15 };
-  { start = 7.0; end_ = 20.0; factor = 0.1 };
-  { start = 20.0; end_ = max_float; factor = 0.05 };
-]
-
-(* val create_fuzz_range : start:float -> end_:float -> factor:float -> fuzz_range *)
-let create_fuzz_range ~start ~end_ ~factor : fuzz_range =
-  { start; end_; factor }
-
-(* val get_fuzz_range : interval:float -> elapsed_days:int -> maximum_interval:int -> int * int *)
-let get_fuzz_range ~(interval: float) ~(elapsed_days: int) ~(maximum_interval: int) : int * int =
-  let delta = List.fold_left
-    (fun acc fuzz_range ->
-      acc +. fuzz_range.factor
-      *. Float.max
-        (Float.min interval fuzz_range.end_ -. fuzz_range.start)
-        0.0
-    )
-    1.0
-    some_fuzz_ranges
-  in
-  let i = Float.min interval (float_of_int maximum_interval) in
-  let min_interval =
-    let base = Float.max 2.0 (Float.round (i -. delta)) in
-    let base =
-      if i > float_of_int elapsed_days then
-        Float.max base (float_of_int elapsed_days +. 1.0)
-      else
-        base
-    in
-    Float.min base (Float.min (Float.round (i +. delta)) (float_of_int maximum_interval))
-  in
-  let max_interval = Float.min (Float.round (i +. delta)) (float_of_int maximum_interval) in
-  (int_of_float min_interval, int_of_float max_interval)
-
-(* TODO implement random number generator and seed if that's what we want. *)

@@ -17,7 +17,6 @@ let init_seed sched =
   let seed_str = Printf.sprintf "%d_%d_%f" time reps mul in
   { sched with parameters = { sched.parameters with seed = seed_str } }
 
-(* TODO maybe init_seed should mutate the scheduler *)
 let create (parameters : Parameters.t) (card : card) (now : Timedesc.Timestamp.t) =
   let elapsed_days =
     match card.state with
