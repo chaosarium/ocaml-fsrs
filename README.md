@@ -20,8 +20,6 @@ opam install ptime
 ```sh
 # build
 dune build
-# test command line parsing (may want to parse commands? idk)
-dune exec ocaml-fsrs -- -n Alice -c 3
 # run unit tests
 dune runtest
 ```
