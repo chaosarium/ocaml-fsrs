@@ -5,11 +5,11 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github chaosarium/ocaml-fsrs))
 
-(authors "Author Name <author@example.com>")
+(authors "Lómenoirë Mortecc. <chaosarium@duck.com>")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
+(maintainers "Lómenoirë Mortecc. <chaosarium@duck.com>")
 
 (license LICENSE)
 
