@@ -1,6 +1,7 @@
 (test
  (name test_fsrs)
  (modules test_fsrs)
+ (flags (:standard -w -26-32-27-69-34-37-33))
  (libraries
    ocaml-fsrs
    alcotest
