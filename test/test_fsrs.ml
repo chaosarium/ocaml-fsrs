@@ -22,7 +22,6 @@ let state_testable =
     (fun fmt s -> Format.pp_print_string fmt (show_state s))
     ( = )
 
-
 let test_basic_scheduler_interval () =
   let params = Parameters.default () in
   let fsrs = Fsrs.create params in
@@ -99,12 +98,31 @@ let test_basic_scheduler_memo_state () =
   check (float 0.0001) "stability" 71.4554 (final_card.stability);
   ()
 
+let test_get_retrievability () =
+  let params = Parameters.default () in
+  let fsrs = Fsrs.create params in
+  let card = Models.new_card () in
+  let now = string_to_utc "2022-11-29T12:30:00Z" in
+  let expect_retrievability = [| 1.0; 1.0; 1.0; 0.9026208 |] in
+  let record_log = Fsrs.repeat fsrs card now in
+  List.iteri
+    (fun i rating ->
+      let info = RatingMap.find rating record_log in
+      let card' = info.card in
+      let retrievability = Models.get_retrievability card' ~now:card'.due (Parameters.forgetting_curve fsrs.parameters) in
+      check (float 0.0000001) "retrievability" expect_retrievability.(i) retrievability
+    )
+    Models.possible_ratings
+
 let () =
   let open Alcotest in
   run "FSRS Scheduler" [
-    "test_fsrs", [ 
-      (* test_case "test_basic_scheduler_interval" `Quick test_basic_scheduler_interval;
-      test_case "test_basic_scheduler_state" `Quick test_basic_scheduler_state; *)
+    "test_basic_scheduler", [ 
+      test_case "test_basic_scheduler_interval" `Quick test_basic_scheduler_interval;
+      test_case "test_basic_scheduler_state" `Quick test_basic_scheduler_state;
       test_case "test_basic_scheduler_memo_state" `Quick test_basic_scheduler_memo_state;
     ];
+    "test_get_retrievability", [
+      test_case "test_get_retrievability" `Quick test_get_retrievability;
+    ]
   ]
