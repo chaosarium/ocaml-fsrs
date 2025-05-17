@@ -12,7 +12,6 @@ For OCaml practice... and for... if someone on planet Earth ever wants an SRS li
 opam install cmdliner
 opam install ocamlformat
 opam install base
-opam install ptime
 ```
 
 ## Running stuff
