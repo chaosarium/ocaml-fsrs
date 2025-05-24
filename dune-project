@@ -4,7 +4,7 @@
 
 (generate_opam_files true)
 
-(version v0.1.0-alpha2)
+(version 0.1.0-alpha2)
 
 (source
  (github chaosarium/ocaml-fsrs))
