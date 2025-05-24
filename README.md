@@ -53,7 +53,7 @@ Or refer to commands in `justfile`.
 Something like
 
 ```sh
-git tag v0.1.0-alpha1
+git tag v0.1.0-alpha2
 git push --tags
 ```
 
