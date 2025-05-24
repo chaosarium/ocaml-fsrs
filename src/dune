@@ -1,7 +1,7 @@
   (library
    (name fsrs)
    (modules fsrs models parameters scheduler utils scheduler_basic scheduler_longterm alea)
-   (libraries base ptime ptime.clock timedesc)
+   (libraries base timedesc)
    (flags (:standard -w -26-32-27-69-34-37-33))
    (public_name ocaml-fsrs)
    (wrapped false)

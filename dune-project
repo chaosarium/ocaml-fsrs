@@ -4,6 +4,8 @@
 
 (generate_opam_files true)
 
+(version 0.1.0~alpha1)
+
 (source
  (github chaosarium/ocaml-fsrs))
 
@@ -17,10 +19,11 @@
 
 (package
  (name ocaml-fsrs)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml)
- (tags
-  ("add topics" "to describe" your project)))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
+ (synopsis "OCaml implementation of the FSRS scheduler")
+ (description "A library implementing the FSRS (Free Spaced Repetition Scheduler) algorithm in OCaml.")
+ (depends
+   ocaml
+   base
+   timedesc
+ )
+ (tags ("spaced-repetition" "srs" "fsrs" "anki" "learning" "ocaml" "algorithm")))

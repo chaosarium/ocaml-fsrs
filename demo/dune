@@ -1,10 +1,9 @@
-(test
- (name test_fsrs)
- (modules test_fsrs)
+(executable
+ (name demo)
+ (public_name demo)
  (flags (:standard -w -26-32-27-69-34-37-33))
  (libraries
    ocaml-fsrs
-   alcotest
    base
    timedesc
  )

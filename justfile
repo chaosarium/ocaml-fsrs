@@ -10,3 +10,6 @@ clean:
 buildc: clean build 
 
 testc: clean test
+
+demo: buildc
+    dune exec demo

@@ -34,8 +34,8 @@ type card = {
   state: state;
   last_review: ts;
 }
-let show_card (c : card) =
-  Printf.sprintf
+let pp_card fmt (c : card) =
+  Format.fprintf fmt
     "{ due = %s; stability = %.4f; difficulty = %.4f; elapsed_days = %d; scheduled_days = %d; reps = %d; lapses = %d; state = %s; last_review = %s }"
     (Timedesc.Timestamp.to_rfc3339 c.due)
     c.stability
@@ -46,6 +46,8 @@ let show_card (c : card) =
     c.lapses
     (show_state c.state)
     (Timedesc.Timestamp.to_rfc3339 c.last_review)
+let show_card (c : card) =
+  Format.asprintf "%a" pp_card c
 
 type review_log = {
   rating: rating;
@@ -54,26 +56,38 @@ type review_log = {
   state: state;
   reviewed_date: ts;
 }
-let show_review_log (r : review_log) =
-  Printf.sprintf
+let pp_review_log fmt (r : review_log) =
+  Format.fprintf fmt
     "{ rating = %s; elapsed_days = %d; scheduled_days = %d; state = %s; reviewed_date = %s }"
     (show_rating r.rating)
     r.elapsed_days
     r.scheduled_days
     (show_state r.state)
     (Timedesc.Timestamp.to_rfc3339 r.reviewed_date)
+let show_review_log (r : review_log) =
+  Format.asprintf "%a" pp_review_log r
 
 type scheduling_info = {
   card: card;
   review_log: review_log;
-}
+} [@@deriving show]
 
 module RatingMap = Map.Make(struct
   type t = rating
   let compare = compare
 end)
 
-type record_log = scheduling_info RatingMap.t
+type record_log = scheduling_info RatingMap.t 
+let pp_record_log fmt (rl : record_log) =
+  let open Format in
+  fprintf fmt "@[<v 2>{";
+  RatingMap.iter (fun rating sched_info ->
+    fprintf fmt "@,%s: %a" (show_rating rating) pp_scheduling_info sched_info
+  ) rl;
+  fprintf fmt "@]@,}"
+
+let show_record_log (rl : record_log) =
+  Format.asprintf "%a" pp_record_log rl
 
 let new_card () =
   let now = Timedesc.Timestamp.now () in
