@@ -13,7 +13,7 @@
 
 (maintainers "Lómenoirë Mortecc. <chaosarium@duck.com>")
 
-(license LICENSE)
+(license MIT)
 
 (documentation https://url/to/documentation)
 
@@ -26,4 +26,4 @@
    base
    timedesc
  )
- (tags ("spaced-repetition" "srs" "fsrs" "anki" "learning" "ocaml" "algorithm")))
+ (tags ("fsrs")))

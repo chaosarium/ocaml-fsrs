@@ -55,6 +55,7 @@ Something like
 ```sh
 git tag 0.1.0-alpha2
 git push --tags
+opam publish
 ```
 
 ## Acknowledgements

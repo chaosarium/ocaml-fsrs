@@ -6,10 +6,8 @@ description:
   "A library implementing the FSRS (Free Spaced Repetition Scheduler) algorithm in OCaml."
 maintainer: ["Lómenoirë Mortecc. <chaosarium@duck.com>"]
 authors: ["Lómenoirë Mortecc. <chaosarium@duck.com>"]
-license: "LICENSE"
-tags: [
-  "spaced-repetition" "srs" "fsrs" "anki" "learning" "ocaml" "algorithm"
-]
+license: "MIT"
+tags: ["fsrs"]
 homepage: "https://github.com/chaosarium/ocaml-fsrs"
 doc: "https://url/to/documentation"
 bug-reports: "https://github.com/chaosarium/ocaml-fsrs/issues"
@@ -35,3 +33,8 @@ build: [
   ]
 ]
 dev-repo: "git+https://github.com/chaosarium/ocaml-fsrs.git"
+
+url {
+  src: "https://github.com/chaosarium/ocaml-fsrs/archive/refs/tags/0.1.0-alpha2.tar.gz"
+  checksum: "sha256=e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+}
